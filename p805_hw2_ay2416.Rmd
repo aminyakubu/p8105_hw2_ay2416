@@ -5,3 +5,40 @@ date: "9/30/2018"
 output: github_document
 ---
 
+## Problem 1
+
+Loading the tidyverse package 
+
+```{r}
+library(tidyverse)
+```
+
+Reading the NYC transit dataset 
+
+```{r cleaning}
+transit_df = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
+  janitor::clean_names(dat = .) %>% 
+  select(line, station_name, ends_with("de"), route1:route11, entry, vending, entrance_type, ada ) %>% 
+  mutate(entry = recode(entry, "YES" = TRUE, "NO" = FALSE))
+```
+
+This dataset contains information about NYC Transit trains. The variables include details about stations, trains, routes served, vending information and ada compliance information. 
+
+The code chunk above imports the data and clean the variables names by replacing spaces with underscores and making the names lower case. We then select the variable we need. We've also changed the entry variable to logical type. 
+
+We have `r nrow(transit_df)` rows x `r ncol(transit_df)` columns in our data. The data isn't tidy because same data spread across multiple columns for route. Also data (route number) is stored in the columns of route. 
+
+#### Unique stations
+```{r}
+unique_df = distinct(transit_df, line, station_name, ada)
+
+nrow(unique_df)
+
+sum(unique_df$ada)
+```
+
+There are `r nrow(unique_df)` stations. Of  `r nrow(unique_df)` stations,  `r sum(unique_df$ada)` are ada compliant. 
+
+
+
+

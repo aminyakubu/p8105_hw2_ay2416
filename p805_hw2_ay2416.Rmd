@@ -75,7 +75,7 @@ Reading and cleaning Mr. Trashwheel dataset.
 trash_df = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "Mr. Trash Wheel", cellranger::cell_cols(1:13)) %>% 
   janitor::clean_names() %>% 
   filter(!is.na(dumpster), dumpster != 23220) %>% 
-  mutate(sports_balls = as.integer(round(sports_balls, 0)))
+  mutate(sports_balls = as.integer(sports_balls))
 ```
 
 Reading the 2016 & 2017 precipation data
@@ -97,23 +97,52 @@ Stacking the datasets prec_2016 and prec_2017
 ```{r}
 total_prec = bind_rows(prec_2016, prec_2017) 
 
-month_df = c(pull(total_prec, month)) %>% 
+## pulling the months as a vector from the tibble to be able to apply the month.name function
+month_vector =  month.name[c(pull(total_prec, month))]
 
-  tibble(month_name = month.name[month_df])
-precipitation_df = bind_cols(total_prec, month_df)
+## coverting the vector into a tibble to be able to bind the columns
+month_df = tibble::as.tibble(month_vector) 
+
+## binding columns and renaming and selecting variables
+precipitation_df = bind_cols(total_prec, month_df) %>% 
+  select(everything(), -month) %>% 
+  select(year, month = value, total)
  
 ```
 
+Median for 2017 for sports balls
 ```{r}
+balls_median_17 = trash_df %>% 
+  filter(year == 2017) 
 
+```
+
+The total precipitation in 2017 is `r sum(prec_2017$total)` and the median number of sports balls is `  median(balls_median_17$sports_balls)`
+
+## Problem 3
+
+```{r}
 devtools::install_github("p8105/p8105.datasets")
 
 library(p8105.datasets)
 
 data(brfss_smart2010)
+
 ```
 
+#### Data tidying and wrangling
 
+class, topic, question, sample size, and everything from lower confidence limit to GeoLocation
+s
+```{r}
+brfss_df = janitor::clean_names(dat = brfss_smart2010) %>% 
+  filter(topic == "Overall Health") %>% 
+  select(-(class:question), -sample_size, -(confidence_limit_low:geo_location)) %>% 
+  spread(key = response, value = data_value) %>% 
+  janitor::clean_names() %>% 
+  mutate(excel_vgood = excellent + very_good)
+
+```
 
 
 

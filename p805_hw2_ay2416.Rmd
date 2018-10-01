@@ -40,5 +40,60 @@ sum(unique_df$ada)
 There are `r nrow(unique_df)` stations. Of  `r nrow(unique_df)` stations,  `r sum(unique_df$ada)` are ada compliant. 
 
 
+We are using this code to find identify the stations with no vending (Vending=NO) but allows entrance (entry=YES)
+
+```{r}
+vend_entry = transit_df %>% 
+  mutate(vending = recode(vending, "YES" = TRUE, "NO" = FALSE),
+         no_vend_yes_entry = !(vending == entry))
+  
+prop_vend_entry = sum(vend_entry$no_vend_yes_entry)/nrow(vend_entry)
+prop_vend_entry
+```
+
+We have `r prop_vend_entry` of entrance/exits with no vending allow entrance. 
+
+#### Reformatting the data in combination to finding number of stations that serve the A train
+
+```{r}
+
+reformatted_df = transit_df %>% 
+  gather(key = route , value = train , route1:route11) %>% 
+  separate(route, into = c("remove1", "route"), sep = 5) %>% 
+  select(everything(), -remove1) %>% 
+  distinct(line, station_name, train, ada) %>% 
+  filter(train == "A")
+```
+
+`r nrow(reformatted_df)` distinct stations serve the A train. Of the `r nrow(reformatted_df)` trains, `r sum(reformatted_df$ada)` are ada compliant. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

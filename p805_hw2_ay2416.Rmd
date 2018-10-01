@@ -43,17 +43,17 @@ There are `r nrow(unique_df)` stations. Of  `r nrow(unique_df)` stations,  `r su
 We are using this code to find identify the stations with no vending (Vending=NO) but allows entrance (entry=YES)
 
 ```{r}
-vend_entry = transit_df %>% 
+vend_entry_df = transit_df %>% 
   mutate(vending = recode(vending, "YES" = TRUE, "NO" = FALSE),
          no_vend_yes_entry = !(vending == entry))
   
-prop_vend_entry = sum(vend_entry$no_vend_yes_entry)/nrow(vend_entry)
+prop_vend_entry = sum(vend_entry_df$no_vend_yes_entry)/nrow(vend_entry_df)
 prop_vend_entry
 ```
 
 We have `r prop_vend_entry` of entrance/exits with no vending allow entrance. 
 
-#### Reformatting the data in combination to finding number of stations that serve the A train
+Reformatting the data in combination to finding number of stations that serve the A train
 
 ```{r}
 
@@ -66,6 +66,52 @@ reformatted_df = transit_df %>%
 ```
 
 `r nrow(reformatted_df)` distinct stations serve the A train. Of the `r nrow(reformatted_df)` trains, `r sum(reformatted_df$ada)` are ada compliant. 
+
+## Problem 2
+
+Reading and cleaning Mr. Trashwheel dataset. 
+
+```{r}
+trash_df = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "Mr. Trash Wheel", cellranger::cell_cols(1:13)) %>% 
+  janitor::clean_names() %>% 
+  filter(!is.na(dumpster), dumpster != 23220) %>% 
+  mutate(sports_balls = as.integer(round(sports_balls, 0)))
+```
+
+Reading the 2016 & 2017 precipation data
+
+```{r}
+prec_2016 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "2016 Precipitation", range = "A2:B14") %>% 
+  janitor::clean_names() %>% 
+  mutate(year = 2016)
+  
+
+prec_2017 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "2017 Precipitation", range = "A2:B14") %>% 
+  janitor::clean_names() %>% 
+  mutate(year = 2017) %>% 
+  filter(!is.na(total))
+```
+
+Stacking the datasets prec_2016 and prec_2017
+
+```{r}
+total_prec = bind_rows(prec_2016, prec_2017) 
+
+month_df = c(pull(total_prec, month)) %>% 
+
+  tibble(month_name = month.name[month_df])
+precipitation_df = bind_cols(total_prec, month_df)
+ 
+```
+
+```{r}
+
+devtools::install_github("p8105/p8105.datasets")
+
+library(p8105.datasets)
+
+data(brfss_smart2010)
+```
 
 
 

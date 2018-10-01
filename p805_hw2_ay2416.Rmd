@@ -144,12 +144,46 @@ brfss_df = janitor::clean_names(dat = brfss_smart2010) %>%
 
 ```
 
+Questions
+
+There are `r nrow(distinct(brfss_df, locationabbr))` unique locations. Everything state is represented and Washington DC is also included. 
+
+```{r}
+most_observed = count(brfss_df, locationabbr) %>% 
+  top_n(1, n) %>% 
+  select(locationabbr)
+
+```
+
+`r most_observed` is most observed with 146 observations/townships. 
 
 
+```{r}
+data_2002 = brfss_df %>% 
+  filter(year == 2002)
 
+median(data_2002$excellent, na.rm = TRUE)
 
+```
 
+The median value of excellent response in the year 2002 is `r median(data_2002$excellent, na.rm = TRUE)`.
 
+### Plots
+
+Histogram
+
+```{r}
+ggplot(data_2002, aes(x = excellent)) + 
+  geom_histogram()
+```
+
+Scatterplot
+
+```{r}
+brfss_df %>% 
+  filter(locationdesc %in% c("NY - New York County", "NY - Queens County")) %>% 
+  ggplot(aes(x = year, y = excellent))
+```
 
 
 

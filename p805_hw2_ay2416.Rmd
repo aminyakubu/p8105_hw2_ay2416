@@ -142,7 +142,7 @@ brfss_df = janitor::clean_names(dat = brfss_smart2010) %>%
 
 ```
 
-Questions
+Questions to be answered
 
 There are `r nrow(distinct(brfss_df, locationabbr))` unique locations. Every state is represented and Washington DC is also included. 
 
@@ -163,7 +163,7 @@ median(data_2002$excellent, na.rm = TRUE)
 
 The median value of excellent response in the year 2002 is `r median(data_2002$excellent, na.rm = TRUE)`.
 
-### Plots
+#### Plots
 
 Histogram
 

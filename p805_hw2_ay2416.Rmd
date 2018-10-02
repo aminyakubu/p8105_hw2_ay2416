@@ -70,9 +70,9 @@ reformatted_df = transit_df %>%
 Reading and cleaning Mr. Trashwheel dataset. 
 
 ```{r}
-trash_df = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "Mr. Trash Wheel", cellranger::cell_cols(1:13)) %>% 
+trash_df = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N258") %>% 
   janitor::clean_names() %>% 
-  filter(!is.na(dumpster), dumpster != 23220) %>% 
+  filter(!is.na(dumpster)) %>% 
   mutate(sports_balls = as.integer(sports_balls))
 ```
 
@@ -114,7 +114,10 @@ balls_median_17 = trash_df %>%
   filter(year == 2017) 
 
 ```
-The datasets contains information about precipation for the year 2016 and 2017. There are `r nrow(prec_2016)` rows (observations) x `r ncol(prec_2016)` columns in the 2016 precipation data. In the dataset for 2017, there are We have `r nrow(prec_2016)` rows (observations) x `r ncol(prec_2017)` columns. Both contain information on total precipation (total variable) of each month (month variable).
+
+The trash wheel dataset contains `r nrow(trash_df)` rows x `r ncol(trash_df)` columns after cleaning. It contains a wide range of information about the trashwheel waste collector. There's information about the type of waste collected like number of plastic and glass bottles, sport balls, grocery bags etc. Date information is also collected. 
+
+The precipitation datasets contains information about precipation for the year 2016 and 2017. There are `r nrow(prec_2016)` rows (observations) x `r ncol(prec_2016)` columns in the 2016 precipation data. In the dataset for 2017, there are We have `r nrow(prec_2016)` rows (observations) x `r ncol(prec_2017)` columns. Both contain information on total precipation (total variable) of each month (month variable).
 
 The total precipitation in 2017 is `r sum(prec_2017$total)` and the median number of sports balls is `r  median(balls_median_17$sports_balls)`
 

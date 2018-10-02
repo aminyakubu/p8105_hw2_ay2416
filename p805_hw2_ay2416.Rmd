@@ -26,9 +26,9 @@ This dataset contains information about NYC Transit trains. The variables includ
 
 The code chunk above imports the data and clean the variables names by replacing spaces with underscores and making the names lower case. We then select the variable we need. We've also changed the entry variable to logical type. 
 
-We have `r nrow(transit_df)` rows x `r ncol(transit_df)` columns in our data. The data isn't tidy because same data spread across multiple columns for route. Also data (route number) is stored in the columns of route. 
+We have `r nrow(transit_df)` rows x `r ncol(transit_df)` columns in our data. The data isn't tidy because same data are spread across multiple columns for route. Also data (route number) is stored in the columns (in variable name) of route. 
 
-#### Unique stations
+#### Unique stations and number that a ADA compliant
 ```{r}
 unique_df = distinct(transit_df, line, station_name, ada)
 
@@ -40,23 +40,21 @@ sum(unique_df$ada)
 There are `r nrow(unique_df)` stations. Of  `r nrow(unique_df)` stations,  `r sum(unique_df$ada)` are ada compliant. 
 
 
-We are using this code to find identify the stations with no vending (Vending=NO) but allows entrance (entry=YES)
+Here, we use this code to identify the stations with no vending (Vending=NO) but allows entrance (entry=YES). By testing a logical variable. It's easier to just do the sum of logical variables to find the number of TRUEs so we negate the logical condition so that FALSES are converted to TRUE. 
 
 ```{r}
 vend_entry_df = transit_df %>% 
   mutate(vending = recode(vending, "YES" = TRUE, "NO" = FALSE),
-         no_vend_yes_entry = !(vending == entry))
+         no_vend_yes_entry = !(vending == entry)) 
   
-prop_vend_entry = sum(vend_entry_df$no_vend_yes_entry)/nrow(vend_entry_df)
-prop_vend_entry
+sum(vend_entry_df$no_vend_yes_entry)/nrow(vend_entry_df)
 ```
 
-We have `r prop_vend_entry` of entrance/exits with no vending allow entrance. 
+We have `r sum(vend_entry_df$no_vend_yes_entry)/nrow(vend_entry_df)` of entrance/exits with no vending allow entrance. 
 
 Reformatting the data in combination to finding number of stations that serve the A train
 
-```{r}
-
+```{r reform_route}
 reformatted_df = transit_df %>% 
   gather(key = route , value = train , route1:route11) %>% 
   separate(route, into = c("remove1", "route"), sep = 5) %>% 
@@ -117,7 +115,7 @@ balls_median_17 = trash_df %>%
 
 ```
 
-The total precipitation in 2017 is `r sum(prec_2017$total)` and the median number of sports balls is `  median(balls_median_17$sports_balls)`
+The total precipitation in 2017 is `r sum(prec_2017$total)` and the median number of sports balls is `r  median(balls_median_17$sports_balls)`
 
 ## Problem 3
 
@@ -146,17 +144,14 @@ brfss_df = janitor::clean_names(dat = brfss_smart2010) %>%
 
 Questions
 
-There are `r nrow(distinct(brfss_df, locationabbr))` unique locations. Everything state is represented and Washington DC is also included. 
+There are `r nrow(distinct(brfss_df, locationabbr))` unique locations. Every state is represented and Washington DC is also included. 
 
 ```{r}
 most_observed = count(brfss_df, locationabbr) %>% 
-  top_n(1, n) %>% 
-  select(locationabbr)
-
+  top_n(1, n) 
 ```
 
-`r most_observed` is most observed with 146 observations/townships. 
-
+`r pull(most_observed, locationabbr)` is most observed with `r pull(most_observed, n)` observations/townships. 
 
 ```{r}
 data_2002 = brfss_df %>% 
@@ -182,7 +177,8 @@ Scatterplot
 ```{r}
 brfss_df %>% 
   filter(locationdesc %in% c("NY - New York County", "NY - Queens County")) %>% 
-  ggplot(aes(x = year, y = excellent))
+  ggplot(aes(x = year, y = excellent, color = locationdesc)) +
+  geom_point()
 ```
 
 

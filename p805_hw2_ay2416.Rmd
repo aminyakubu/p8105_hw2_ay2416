@@ -114,6 +114,7 @@ balls_median_17 = trash_df %>%
   filter(year == 2017) 
 
 ```
+The datasets contains information about precipation for the year 2016 and 2017. There are `r nrow(prec_2016)` rows (observations) x `r ncol(prec_2016)` columns in the 2016 precipation data. In the dataset for 2017, there are We have `r nrow(prec_2016)` rows (observations) x `r ncol(prec_2017)` columns. Both contain information on total precipation (total variable) of each month (month variable).
 
 The total precipitation in 2017 is `r sum(prec_2017$total)` and the median number of sports balls is `r  median(balls_median_17$sports_balls)`
 

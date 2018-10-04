@@ -45,14 +45,15 @@ Here, we use this code to identify the stations with no vending (Vending=NO) but
 ```{r}
 vend_entry_df = transit_df %>% 
   mutate(vending = recode(vending, "YES" = TRUE, "NO" = FALSE),
-         no_vend_yes_entry = !(vending == entry)) 
+         no_vend_yes_entry = !(vending == entry)) %>% 
+  filter(!(vending == TRUE & entry == FALSE))
   
 sum(vend_entry_df$no_vend_yes_entry)/nrow(vend_entry_df)
-```
+ ```
 
 We have `r sum(vend_entry_df$no_vend_yes_entry)/nrow(vend_entry_df)` of entrance/exits with no vending allow entrance. 
 
-Reformatting the data in combination to finding number of stations that serve the A train
+Reformatting the data and combination to finding number of stations that serve the A train
 
 ```{r reform_route}
 reformatted_df = transit_df %>% 

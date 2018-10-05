@@ -149,7 +149,7 @@ brfss_df = janitor::clean_names(dat = brfss_smart2010) %>%
 
 Questions to be answered
 
-There are `r nrow(distinct(brfss_df, locationdesc))` unique locations. There are `r nrow(distinct(brfss_df, locationabbr))` unique states. Every state is represented and Washington DC is also included. 
+There are `r nrow(distinct(brfss_df, locationdesc))` distinct locations. There are `r nrow(distinct(brfss_df, locationabbr))` distinct states. Every state is represented and Washington DC is also included. 
 
 ```{r}
 most_observed = count(brfss_df, locationabbr) %>% 

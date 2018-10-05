@@ -71,7 +71,7 @@ reformatted_df = transit_df %>%
 Reading and cleaning Mr. Trashwheel dataset. 
 
 ```{r}
-trash_df = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N258") %>% 
+trash_df = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N258") %>% 
   janitor::clean_names() %>% 
   filter(!is.na(dumpster)) %>% 
   mutate(sports_balls = as.integer(sports_balls))
@@ -80,12 +80,12 @@ trash_df = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xls
 Reading the 2016 & 2017 precipation data
 
 ```{r}
-prec_2016 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "2016 Precipitation", range = "A2:B14") %>% 
+prec_2016 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2016 Precipitation", range = "A2:B14") %>% 
   janitor::clean_names() %>% 
   mutate(year = 2016)
   
 
-prec_2017 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = "2017 Precipitation", range = "A2:B14") %>% 
+prec_2017 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2017 Precipitation", range = "A2:B14") %>% 
   janitor::clean_names() %>% 
   mutate(year = 2017) %>% 
   filter(!is.na(total))
@@ -106,7 +106,6 @@ month_df = tibble::as.tibble(month_vector)
 precipitation_df = bind_cols(total_prec, month_df) %>% 
   select(-month) %>% 
   select(year, month = value, total)
- 
 ```
 
 Median for 2016 for sports balls
@@ -150,7 +149,7 @@ brfss_df = janitor::clean_names(dat = brfss_smart2010) %>%
 
 Questions to be answered
 
-There are `r nrow(distinct(brfss_df, locationabbr))` unique locations. Every state is represented and Washington DC is also included. 
+There are `r nrow(distinct(brfss_df, locationdesc))` unique locations. There are `r nrow(distinct(brfss_df, locationabbr))` unique states. Every state is represented and Washington DC is also included. 
 
 ```{r}
 most_observed = count(brfss_df, locationabbr) %>% 
